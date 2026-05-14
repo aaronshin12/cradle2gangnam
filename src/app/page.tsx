@@ -51,10 +51,14 @@ export default function Home() {
       let lawdCd: string | null = null;
       let center: { x: number; y: number } | null = null;
       let label = q;
+      let viaRegion = false;
 
       if (addrRes.ok && addrRes.documents?.length) {
         const first = addrRes.documents[0];
-        lawdCd = first.lawdCd ?? null;
+        if (first.lawdCd) {
+          lawdCd = first.lawdCd;
+          viaRegion = true;
+        }
         center = { x: Number(first.x), y: Number(first.y) };
         label = first.address_name;
       }
@@ -82,7 +86,7 @@ export default function Home() {
       }
 
       setHit({ lawdCd, center, label });
-      setFilterKeyword(kwRes.ok && kwRes.documents?.length ? q : "");
+      setFilterKeyword(viaRegion ? "" : q);
 
       const apartRes = await fetch(`/api/apartments/search?lawdCd=${lawdCd}`).then((r) => r.json());
       if (apartRes.ok) {
