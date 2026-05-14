@@ -22,7 +22,18 @@ export async function fetchOdsayTransit(
   ey: number,
 ): Promise<OdsayTransitResult | null> {
   const u = new URL(ENDPOINT);
-  u.searchParams.set("apiKey", env.odsayApiKey);
+  const rawKey = env.odsayApiKey;
+  // ODsay LAB displays the key in URL-encoded form. URLSearchParams will
+  // percent-encode whatever we pass, so decode once first to avoid double
+  // encoding (which makes ODsay return ApiKeyAuthFailed). decodeURIComponent
+  // is a no-op for already-decoded keys, so this handles both forms.
+  let apiKey = rawKey;
+  try {
+    apiKey = decodeURIComponent(rawKey);
+  } catch {
+    /* leave as-is if not valid percent-encoding */
+  }
+  u.searchParams.set("apiKey", apiKey);
   u.searchParams.set("lang", "0");
   u.searchParams.set("SX", String(sx));
   u.searchParams.set("SY", String(sy));
@@ -55,7 +66,8 @@ export async function fetchOdsayTransit(
   };
   const errMsg = extractError(json);
   if (errMsg) {
-    console.error("[odsay] response error:", errMsg, "raw=", JSON.stringify(json).slice(0, 500));
+    const mask = `len=${rawKey.length} decodedLen=${apiKey.length} tail=...${apiKey.slice(-4)}`;
+    console.error("[odsay] response error:", errMsg, "key:", mask, "raw=", JSON.stringify(json).slice(0, 500));
     throw new Error(`ODsay error: ${errMsg}`);
   }
   const result = json.result as
