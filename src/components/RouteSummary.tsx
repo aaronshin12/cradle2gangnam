@@ -30,7 +30,10 @@ export default function RouteSummary({ destLabel, car, transit }: Props) {
               </div>
             </>
           ) : (
-            <div className="text-sm text-[var(--text-3)]">정보 없음</div>
+            <div className="text-sm text-[var(--text-3)]">
+              정보 없음
+              {car.error && <div className="text-[10px] text-[var(--status-stuck)] mt-0.5 truncate" title={car.error}>{car.error}</div>}
+            </div>
           )}
         </div>
         <div className="rounded-xl bg-white/55 border border-white/60 p-3">
@@ -45,7 +48,10 @@ export default function RouteSummary({ destLabel, car, transit }: Props) {
               </div>
             </>
           ) : (
-            <div className="text-sm text-[var(--text-3)]">정보 없음</div>
+            <div className="text-sm text-[var(--text-3)]">
+              정보 없음
+              {transit.error && <div className="text-[10px] text-[var(--status-stuck)] mt-0.5 truncate" title={transit.error}>{transit.error}</div>}
+            </div>
           )}
         </div>
       </div>

@@ -161,6 +161,8 @@ export default function DetailDrawer({ open, apt, coord, destination, onClose }:
             </ul>
           </section>
 
+          <BriefingPanel loading={briefing.loading} text={briefing.text} error={briefing.error} />
+
           <RouteSummary destLabel={destination.label} car={car} transit={transit} />
 
           <section>
@@ -171,8 +173,6 @@ export default function DetailDrawer({ open, apt, coord, destination, onClose }:
               <div className="text-sm text-[var(--text-3)]">정보 없음</div>
             )}
           </section>
-
-          <BriefingPanel loading={briefing.loading} text={briefing.text} error={briefing.error} />
         </div>
       </aside>
     </div>

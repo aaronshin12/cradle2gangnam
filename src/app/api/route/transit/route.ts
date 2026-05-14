@@ -13,9 +13,8 @@ export async function POST(req: NextRequest) {
     const data = await fetchOdsayTransit(sx, sy, ex, ey);
     return NextResponse.json({ ok: true, data });
   } catch (e) {
-    return NextResponse.json(
-      { ok: false, error: e instanceof Error ? e.message : "unknown" },
-      { status: 502 },
-    );
+    const msg = e instanceof Error ? e.message : "unknown";
+    console.error("[transit] ODsay failed:", msg);
+    return NextResponse.json({ ok: false, error: msg }, { status: 502 });
   }
 }
