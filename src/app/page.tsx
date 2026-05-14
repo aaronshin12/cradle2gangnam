@@ -143,10 +143,12 @@ export default function Home() {
       visible
         .map((a, i) => {
           const c = filteredCoords[a.aptName];
-          return c ? { id: String(i), x: c.x, y: c.y, label: a.aptName } : null;
+          return c
+            ? { id: String(i), x: c.x, y: c.y, label: a.aptName, highlight: i === selectedAptIdx }
+            : null;
         })
         .filter(Boolean) as MapMarker[],
-    [visible, filteredCoords],
+    [visible, filteredCoords, selectedAptIdx],
   );
 
   const selectedApt = selectedAptIdx !== null ? visible[selectedAptIdx] : null;
