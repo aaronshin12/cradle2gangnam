@@ -82,18 +82,32 @@ export default function KakaoMap({ center, markers, onSelect, className }: Props
     const kakao = w.kakao;
     for (const m of markerObjsRef.current) m.setMap(null);
     markerObjsRef.current = [];
+
+    const highlightSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="48" viewBox="0 0 36 48"><path d="M18 0C8 0 0 8 0 18c0 12 18 30 18 30s18-18 18-30c0-10-8-18-18-18z" fill="#FF3B30" stroke="white" stroke-width="2"/><circle cx="18" cy="18" r="6" fill="white"/></svg>`;
+    const highlightImage = new kakao.maps.MarkerImage(
+      `data:image/svg+xml;utf8,${encodeURIComponent(highlightSvg)}`,
+      new kakao.maps.Size(36, 48),
+      { offset: new kakao.maps.Point(18, 48) },
+    );
+
+    let highlightPos: any = null;
     for (const m of markers) {
       const pos = new kakao.maps.LatLng(m.y, m.x);
+      if (m.highlight) highlightPos = pos;
       const marker = new kakao.maps.Marker({
         position: pos,
         map: mapRef.current,
         title: m.label,
+        image: m.highlight ? highlightImage : undefined,
+        zIndex: m.highlight ? 100 : 1,
       });
       if (onSelect) {
         kakao.maps.event.addListener(marker, "click", () => onSelect(m.id));
       }
       markerObjsRef.current.push(marker);
     }
+
+    if (highlightPos) mapRef.current.panTo(highlightPos);
   }, [markers, onSelect]);
 
   const overlay = (() => {
