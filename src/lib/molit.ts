@@ -87,7 +87,7 @@ export async function fetchMolitTrades(lawdCd: string, dealYmd: string): Promise
     );
   }
   const items = json.response?.body?.items;
-  if (!items || items === "" || !("item" in items)) return [];
+  if (!items || !("item" in items)) return [];
   const rawItems = items.item;
   const arr = Array.isArray(rawItems) ? rawItems : rawItems ? [rawItems] : [];
   return arr.map(normalize).filter((x): x is MolitTrade => x !== null);
